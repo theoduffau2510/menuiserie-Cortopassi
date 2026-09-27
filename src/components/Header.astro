@@ -1,0 +1,91 @@
+---
+import { site } from '../data/site';
+
+const navLinks = [
+  { href: '/', label: 'Accueil' },
+  { href: '/realisations/', label: 'Réalisations' },
+  { href: '/services/', label: 'Services' },
+  { href: '/zone-intervention/', label: "Zone d'intervention" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-kraft border-b border-noyer/25">
+  <div class="container-page flex items-center justify-between py-4">
+    <a href="/" class="-ml-1 flex items-center gap-3 text-noyer sm:-ml-3 lg:-ml-5">
+      <span class="flex h-16 w-40 shrink-0 justify-center overflow-hidden rounded-md mix-blend-multiply sm:h-20 sm:w-56">
+        <img
+          src="/images/WhatsApp%20Image%202026-09-26%20at%2011.26.05.jpeg"
+          alt={site.name}
+          class="h-full w-[120%] max-w-none flex-none object-cover object-center"
+        />
+      </span>
+      <span class="hidden flex-col sm:flex">
+        <span class="text-[0.65rem] tracking-[0.12em] text-noyer/60">
+          {site.address.city.toUpperCase()} · {site.address.region.toUpperCase()}
+        </span>
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'font-sans text-sm font-medium hover:text-cordeau',
+              currentPath === link.href ? 'text-cordeau' : 'text-noyer',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a href="/contact/" class="btn-primary text-sm">Contact</a>
+    </nav>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="md:hidden inline-flex items-center justify-center p-2 text-noyer"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <nav id="mobile-menu" class="hidden md:hidden flex-col gap-1 px-4 pb-4">
+    {
+      navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'block px-3 py-2 font-sans text-base font-medium',
+            currentPath === link.href ? 'text-cordeau' : 'text-noyer',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <a href="/contact/" class="btn-primary mt-2 w-full text-sm">Contact</a>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const isHidden = menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    menu?.classList.toggle('flex');
+    toggle.setAttribute('aria-expanded', String(Boolean(isHidden)));
+  });
+</script>

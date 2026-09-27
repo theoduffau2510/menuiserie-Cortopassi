@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import { villes } from '../../data/villes';
+import { projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  return villes.map((ville) => ({
+    params: { ville: ville.slug },
+    props: { ville },
+  }));
+}
+
+const { ville } = Astro.props;
+const localProjects = projects.filter((p) => p.city === ville.name);
+---
+
+<BaseLayout
+  title={`Menuisier à ${ville.name} (Var) | Menuiserie Cortopassi`}
+  description={`Artisan menuisier intervenant à ${ville.name}, dans le Var : mobilier aux dimensions du lieu, agencement intérieur, extérieur et rénovation de menuiseries.`}
+  path={`/zone-intervention/${ville.slug}/`}
+>
+  <section class="section pt-10 md:pt-16">
+    <div class="container-page">
+      <div class="max-w-2xl mb-12">
+        <p class="text-cordeau font-medium text-sm mb-3">
+          Zone d'intervention — {ville.distance}
+        </p>
+        <h1 class="text-4xl md:text-5xl mb-4">Menuisier artisan à {ville.name}</h1>
+        <p class="text-noyer/75 leading-relaxed">{ville.description}</p>
+      </div>
+
+      {
+        localProjects.length > 0 && (
+          <div class="mb-12">
+            <h2 class="text-2xl text-center mb-8">
+              Réalisations à {ville.name}
+            </h2>
+            <div class="border-t border-noyer/25">
+              {localProjects.map((project) => (
+                <article class="grid gap-5 border-b border-noyer/25 py-6 md:grid-cols-[minmax(0,1fr)_minmax(220px,0.7fr)] md:items-center">
+                  <img
+                    src={project.image}
+                    alt={project.alt}
+                    loading="lazy"
+                    decoding="async"
+                    width={project.imageWidth}
+                    height={project.imageHeight}
+                    class="h-auto w-full border border-noyer/25"
+                  />
+                  <div>
+                    <p class="text-sm text-cordeau mb-2">{project.city}</p>
+                    <h2 class="text-2xl mb-3">{project.title}</h2>
+                    <p class="text-sm text-noyer/80 leading-relaxed">{project.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      <div class="text-center">
+        <a href="/zone-intervention/" class="btn-secondary">Voir toutes les villes couvertes</a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title={`Un projet de menuiserie à ${ville.name} ?`}
+    text="Contactez-moi pour parler de votre projet et de votre secteur."
+  />
+</BaseLayout>

@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import { projects, categories } from '../../data/projects';
+---
+
+<BaseLayout
+  title="Réalisations de menuiserie dans le Var | Menuiserie Cortopassi"
+  description="Découvrez des réalisations de menuiserie dans le Var : mobilier aux dimensions du lieu, agencement intérieur, aménagements extérieurs et rénovations à Toulon, Draguignan, Fréjus et alentours."
+  path="/realisations/"
+>
+  <section class="section pt-10 md:pt-16">
+    <div class="container-page">
+      <div class="max-w-2xl mb-10">
+        <p class="text-cordeau font-medium text-sm mb-3">Nos réalisations</p>
+        <h1 class="text-4xl md:text-5xl mb-4">Nos réalisations de menuiserie dans le Var</h1>
+        <p class="text-noyer/75">
+          Mobilier aux dimensions du lieu, agencement intérieur, extérieur
+          et rénovation : découvrez des chantiers réalisés dans le Var.
+          Filtrez les projets par type d'intervention.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-10" id="filters" role="group" aria-label="Filtrer les réalisations par type de projet">
+        <button type="button" data-filter="all" class="filter-btn is-active">Tous</button>
+        {
+          categories.map((cat) => (
+            <button type="button" data-filter={cat.value} class="filter-btn">
+              {cat.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <div id="gallery" class="gallery-rail" tabindex="0" aria-label="Galerie horizontale des réalisations">
+        {projects.map((project, index) => (
+          <figure
+            class="gallery-item"
+            data-category={project.category}
+            data-index={index}
+            data-title={project.title}
+            data-city={project.city}
+            data-dimensions={project.dimensions}
+            data-material={project.material}
+          >
+            <button type="button" class="gallery-trigger" aria-label={`Ouvrir ${project.title}`}>
+              <img
+                src={project.image}
+                alt={project.alt}
+                loading="lazy"
+                decoding="async"
+                width={project.imageWidth}
+                height={project.imageHeight}
+                class="gallery-image rounded-2xl border border-noyer/30 bg-kraft shadow-lg"
+              />
+            </button>
+            <figcaption class="border-t border-noyer/25 pt-3">
+              <p class="text-sm text-cordeau">{project.city}</p>
+              <h2 class="text-2xl mt-1">{project.title}</h2>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <p id="no-results" class="hidden text-noyer/70 mt-10">
+        Aucune réalisation ne correspond à ce filtre pour le moment.
+      </p>
+    </div>
+  </section>
+
+  <CTASection
+    title="Votre projet mérite le même soin"
+    text="Envie d'un mobilier ou d'un aménagement comme dans nos réalisations ? Contactez l'atelier pour en parler."
+  />
+</BaseLayout>
+
+<style>
+  .filter-btn {
+    @apply border-2 border-noyer/35 px-4 py-2 text-sm font-medium text-noyer hover:border-cordeau hover:text-cordeau;
+  }
+  .filter-btn.is-active {
+    @apply bg-cordeau text-kraft border-cordeau;
+  }
+
+  .gallery-rail {
+    position: relative;
+    min-height: 34rem;
+    perspective: 1800px;
+    transform-style: preserve-3d;
+  }
+
+  .gallery-item {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + var(--rail-x-offset, 0px));
+    width: min(78vw, 35rem);
+    cursor: pointer;
+    opacity: 0.4;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) translateZ(-380px) scale(0.6);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transition:
+      transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 520ms ease;
+  }
+
+  .gallery-item.is-active {
+    z-index: 4;
+    opacity: 1;
+    cursor: default;
+    pointer-events: none;
+    transform: translate(-50%, -50%) translateZ(0) scale(1);
+  }
+
+  .gallery-item.is-left {
+    z-index: 3;
+    opacity: 0.75;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) translateZ(-180px) rotateY(24deg) scale(0.64);
+  }
+
+  .gallery-item.is-right {
+    z-index: 3;
+    opacity: 0.75;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) translateZ(-180px) rotateY(-24deg) scale(0.64);
+  }
+
+  .gallery-item:not(.is-active) figcaption {
+    display: none;
+  }
+
+  .gallery-trigger {
+    display: block;
+    width: 100%;
+    cursor: inherit;
+  }
+
+  .gallery-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    opacity: 0.94;
+  }
+
+  .gallery-image:hover,
+  .gallery-image:focus-visible {
+    opacity: 1;
+    outline: 2px solid theme('colors.cordeau');
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 767px) {
+    .gallery-rail {
+      min-height: 25rem;
+    }
+
+    .gallery-item {
+      width: 84vw;
+    }
+
+    .gallery-item.is-left {
+      transform: translate(-50%, -50%) translateZ(-140px) rotateY(20deg) scale(0.6);
+    }
+
+    .gallery-item.is-right {
+      transform: translate(-50%, -50%) translateZ(-140px) rotateY(-20deg) scale(0.6);
+    }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.gallery-item'));
+  const galleryRail = document.getElementById('gallery');
+  const noResults = document.getElementById('no-results');
+  let galleryBalanceTimer: number | undefined;
+  const setActiveGalleryItem = (index: number) => {
+    const visibleItems = items.filter((item) => item.style.display !== 'none');
+    if (!visibleItems.length) return;
+    const requestedItem = items[index];
+    const activeItem = visibleItems.includes(requestedItem) ? requestedItem : visibleItems[0];
+    const activeVisibleIndex = visibleItems.indexOf(activeItem);
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const sideScale = isMobile ? 0.6 : 0.64;
+    const sideAngle = (isMobile ? 20 : 24) * Math.PI / 180;
+    const perspectiveScale = 1800 / (1800 + (isMobile ? 140 : 180));
+    const gap = isMobile ? 20 : 32;
+    const activeWidth = activeItem.offsetWidth;
+    const leftItem = visibleItems[(activeVisibleIndex + visibleItems.length - 1) % visibleItems.length];
+    const rightItem = visibleItems[(activeVisibleIndex + 1) % visibleItems.length];
+    const sideWidth = Math.max(leftItem.offsetWidth, rightItem.offsetWidth);
+    const sideOffset = activeWidth / (2 * perspectiveScale) + sideWidth * sideScale * Math.cos(sideAngle) / 2 + gap / perspectiveScale;
+
+    items.forEach((item) => {
+      item.classList.remove('is-active', 'is-left', 'is-right', 'is-far');
+    });
+
+    visibleItems.forEach((item, itemIndex) => {
+      const isActive = item === activeItem;
+      const isLeft = visibleItems.length > 2 && itemIndex === (activeVisibleIndex + visibleItems.length - 1) % visibleItems.length;
+      const isRight = visibleItems.length > 1 && itemIndex === (activeVisibleIndex + 1) % visibleItems.length;
+      item.classList.toggle('is-active', isActive);
+      item.classList.toggle('is-left', isLeft);
+      item.classList.toggle('is-right', isRight);
+      item.classList.toggle('is-far', visibleItems.length > 2 && itemIndex === (activeVisibleIndex + 2) % visibleItems.length);
+      item.style.setProperty('--rail-x-offset', `${isLeft ? -sideOffset : isRight ? sideOffset : 0}px`);
+    });
+
+    if (galleryBalanceTimer !== undefined) window.clearTimeout(galleryBalanceTimer);
+    if (visibleItems.length < 3) return;
+    galleryBalanceTimer = window.setTimeout(() => {
+      const center = (item: HTMLElement) => {
+        const rect = item.getBoundingClientRect();
+        return rect.left + rect.width / 2;
+      };
+      const correction = ((center(activeItem) - center(leftItem)) - (center(rightItem) - center(activeItem))) / 2;
+      const depth = window.matchMedia('(max-width: 767px)').matches ? 140 : 180;
+      const renderedScale = 1800 / (1800 + depth);
+      const adjustment = correction / renderedScale;
+      leftItem.style.setProperty('--rail-x-offset', `${parseFloat(leftItem.style.getPropertyValue('--rail-x-offset')) + adjustment}px`);
+      rightItem.style.setProperty('--rail-x-offset', `${parseFloat(rightItem.style.getPropertyValue('--rail-x-offset')) + adjustment}px`);
+    }, 780);
+  };
+  setActiveGalleryItem(0);
+  window.addEventListener('resize', () => {
+    const activeIndex = items.findIndex((item) => item.classList.contains('is-active'));
+    if (activeIndex >= 0) setActiveGalleryItem(activeIndex);
+  });
+
+  galleryRail?.addEventListener('click', (event) => {
+    event.preventDefault();
+    const clickedItem = event.target instanceof Element
+      ? event.target.closest<HTMLElement>('.gallery-item')
+      : null;
+
+    if (clickedItem && !clickedItem.classList.contains('is-active')) {
+      setActiveGalleryItem(Number(clickedItem.dataset.index));
+      return;
+    }
+
+    const visibleItems = items.filter((item) => item.style.display !== 'none');
+    const activeVisibleIndex = visibleItems.findIndex((item) => item.classList.contains('is-active'));
+    const activeItem = visibleItems[activeVisibleIndex];
+    const activeRect = activeItem?.getBoundingClientRect();
+    if (!activeRect) return;
+
+    const direction = event.clientX < activeRect.left ? -1 : event.clientX > activeRect.right ? 1 : 0;
+    if (!direction) return;
+    const nextVisibleIndex = (activeVisibleIndex + direction + visibleItems.length) % visibleItems.length;
+    setActiveGalleryItem(Number(visibleItems[nextVisibleIndex].dataset.index));
+  });
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      buttons.forEach((b) => b.classList.remove('is-active'));
+      button.classList.add('is-active');
+
+      let visibleCount = 0;
+      items.forEach((item) => {
+        const matches = filter === 'all' || item.dataset.category === filter;
+        item.style.display = matches ? '' : 'none';
+        if (matches) visibleCount += 1;
+      });
+
+      noResults?.classList.toggle('hidden', visibleCount > 0);
+      setActiveGalleryItem(0);
+    });
+  });
+
+</script>

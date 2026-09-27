@@ -1,0 +1,17 @@
+---
+import type { Service } from '../data/services';
+
+interface Props {
+  service: Service;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { service, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article id={service.slug} class="border-t-4 border-cordeau p-6 md:p-8 scroll-mt-24">
+  <Heading class="text-2xl mb-3">{service.title}</Heading>
+  <p class="text-sm font-medium text-noyer/70 mb-4">{service.summary}</p>
+  <p class="text-noyer/85 leading-relaxed">{service.description}</p>
+</article>

@@ -1,0 +1,26 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+
+const {
+  title = 'L’atelier Cortopassi est à Sainte-Anastasie-sur-Issole.',
+  text = 'Téléphonez ou écrivez pour parler d’une essence, d’une cote ou d’une contrainte de chantier.',
+} = Astro.props;
+---
+
+<section class="section bg-noyer text-kraft">
+  <div class="container-page">
+    <h2 class="text-kraft text-3xl md:text-4xl mb-4 max-w-2xl">{title}</h2>
+    <p class="max-w-xl text-kraft/80 mb-8">{text}</p>
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a href="/contact/" class="btn-primary">Parler du projet</a>
+      <a href={`tel:${site.phoneHref}`} class="btn-secondary border-kraft text-kraft hover:bg-kraft hover:text-noyer">
+        Appeler l'atelier
+      </a>
+    </div>
+  </div>
+</section>

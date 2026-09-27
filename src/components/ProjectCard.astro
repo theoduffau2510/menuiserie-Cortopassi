@@ -1,0 +1,30 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  imgClass?: string;
+}
+
+const { project, imgClass = '' } = Astro.props;
+---
+
+<article class="flex h-full flex-col">
+  <div class={`${imgClass} overflow-hidden border-b border-noyer/25 bg-bois`}>
+    <img
+      src={project.image}
+      alt={project.alt}
+      loading="lazy"
+      decoding="async"
+      width={project.imageWidth}
+      height={project.imageHeight}
+      class="block h-auto w-full"
+    />
+  </div>
+
+  <div class="border-t border-noyer/25 p-4">
+    <h3 class="text-xl mb-1">{project.title}</h3>
+    <p class="text-sm text-noyer/70 mb-3">{project.city}</p>
+    <p class="text-sm text-noyer/85 leading-relaxed">{project.description}</p>
+  </div>
+</article>

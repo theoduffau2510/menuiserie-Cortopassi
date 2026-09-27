@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
+---
+
+<BaseLayout
+  title="Contact | Menuiserie Cortopassi, menuisier artisan dans le Var"
+  description="Contactez Menuiserie Cortopassi, artisan menuisier à Sainte-Anastasie-sur-Issole, pour parler d'un projet dans le Var : mobilier, agencement intérieur, extérieur et rénovation."
+  path="/contact/"
+>
+  <section class="section pt-10 md:pt-16">
+    <div class="container-page">
+      <div class="max-w-2xl mb-12">
+        <p class="text-cordeau font-medium text-sm mb-3">Contact</p>
+        <h1 class="text-4xl md:text-5xl mb-4">Contactez votre menuisier dans le Var</h1>
+        <p class="text-noyer/75">
+          Une question, un projet de mobilier ou d'agencement ? Remplissez le formulaire
+          ci-dessous ou contactez-moi directement, je vous réponds sous 48h.
+        </p>
+      </div>
+
+      <div class="grid gap-12 lg:grid-cols-2">
+        <div class="card p-6 md:p-8">
+          <h2 class="text-2xl mb-6">Parler de votre projet</h2>
+          <form id="contact-form" class="space-y-5" novalidate>
+            <!-- Honeypot anti-spam field, hidden from real users -->
+            <div class="hidden" aria-hidden="true">
+              <label for="company">Ne pas remplir ce champ</label>
+              <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <div>
+              <label for="name" class="block text-sm font-medium mb-1">Nom complet *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                autocomplete="name"
+                class="w-full border border-noyer/30 bg-kraft px-4 py-2.5 focus:border-cordeau focus:outline-none focus:ring-2 focus:ring-cordeau/30"
+              />
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium mb-1">Adresse e-mail *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                autocomplete="email"
+                class="w-full border border-noyer/30 bg-kraft px-4 py-2.5 focus:border-cordeau focus:outline-none focus:ring-2 focus:ring-cordeau/30"
+              />
+            </div>
+
+            <div>
+              <label for="phone" class="block text-sm font-medium mb-1">Téléphone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                autocomplete="tel"
+                pattern="[0-9 +().-]{6,20}"
+                class="w-full border border-noyer/30 bg-kraft px-4 py-2.5 focus:border-cordeau focus:outline-none focus:ring-2 focus:ring-cordeau/30"
+              />
+            </div>
+
+            <div>
+              <label for="message" class="block text-sm font-medium mb-1">Votre message *</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
+                class="w-full border border-noyer/30 bg-kraft px-4 py-2.5 focus:border-cordeau focus:outline-none focus:ring-2 focus:ring-cordeau/30"
+              ></textarea>
+            </div>
+
+            <p id="form-error" class="hidden text-sm text-red-700" role="alert"></p>
+            <p id="form-success" class="hidden text-sm text-green-700" role="status">
+              Merci, votre message a bien été envoyé ! Je vous réponds au plus vite.
+            </p>
+
+            <button type="submit" class="btn-primary w-full sm:w-auto">Envoyer ma demande</button>
+          </form>
+        </div>
+
+        <div class="space-y-8">
+          <div class="card p-6 md:p-8">
+            <h2 class="text-2xl mb-4">Coordonnées</h2>
+            <ul class="space-y-3 text-noyer/85">
+              <li>
+                <strong class="text-noyer">Adresse :</strong><br />
+                {site.address.street}, {site.address.postalCode} {site.address.city} ({site.address.region})
+              </li>
+              <li>
+                <strong class="text-noyer">Téléphone :</strong>
+                <a href={`tel:${site.phoneHref}`} class="hover:text-cordeau">{site.phone}</a>
+              </li>
+              <li>
+                <strong class="text-noyer">E-mail :</strong>
+                <a href={`mailto:${site.email}`} class="hover:text-cordeau">{site.email}</a>
+              </li>
+              <li>
+                <strong class="text-noyer">Horaires :</strong>
+                <ul class="mt-1">
+                  {site.hours.map((h) => (
+                    <li class="flex justify-between text-sm max-w-xs">
+                      <span>{h.days}</span>
+                      <span>{h.hours}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+            <a
+              href={site.googleBusinessUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-secondary mt-6 w-full text-center"
+            >
+              Voir la fiche Google Business
+            </a>
+          </div>
+
+          <div class="card overflow-hidden">
+            <iframe
+              src={site.mapEmbedSrc}
+              title={`Localisation de ${site.name} à ${site.address.city}, Var`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="w-full h-72 border-0"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const errorEl = document.getElementById('form-error');
+  const successEl = document.getElementById('form-success');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    errorEl?.classList.add('hidden');
+    successEl?.classList.add('hidden');
+
+    // Honeypot check: if filled, silently ignore (likely a bot)
+    const honeypot = (form.elements.namedItem('company') as HTMLInputElement | null)?.value;
+    if (honeypot) {
+      return;
+    }
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      if (errorEl) {
+        errorEl.textContent = 'Merci de vérifier les champs obligatoires du formulaire.';
+        errorEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    // TODO: remplacer par un véritable envoi vers votre service de formulaire
+    // (ex: Formspree, Netlify Forms, ou une fonction serverless dédiée).
+    successEl?.classList.remove('hidden');
+    form.reset();
+  });
+</script>

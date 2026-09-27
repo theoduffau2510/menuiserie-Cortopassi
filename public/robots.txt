@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.cortopassi-menuiserie.fr/sitemap-index.xml
