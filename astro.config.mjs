@@ -2,6 +2,6 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://www.cortopassi-menuiserie.fr',
+  site: 'https://menuiseriecortopassi.netlify.app',
   integrations: [sitemap()],
 });

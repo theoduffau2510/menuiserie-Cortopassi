@@ -2,19 +2,21 @@
 import { site } from '../data/site';
 import { villes } from '../data/villes';
 
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://menuiseriecortopassi.netlify.app';
+
 const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  '@id': 'https://www.cortopassi-menuiserie.fr/#business',
+  '@id': `${siteUrl}/#business`,
   name: site.name,
   alternateName: 'Menuiserie à Sainte-Anastasie-sur-Issole',
   serviceType: 'Menuiserie bois sur mesure',
   description:
     "Menuiserie Cortopassi à Sainte-Anastasie-sur-Issole, spécialisée dans la menuiserie bois sur mesure pour particuliers et professionnels dans le Var.",
-  url: 'https://www.cortopassi-menuiserie.fr',
+  url: siteUrl,
   telephone: site.phoneHref,
   email: site.email,
-  image: 'https://www.cortopassi-menuiserie.fr/images/WhatsApp%20Image%202026-09-26%20at%2010.22.09%20(2).jpeg',
+  image: `${siteUrl}/images/WhatsApp%20Image%202026-09-26%20at%2010.22.09%20(2).jpeg`,
   hasMap: site.googleBusinessUrl,
   priceRange: '€€',
   knowsAbout: [

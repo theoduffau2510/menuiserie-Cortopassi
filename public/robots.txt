@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.cortopassi-menuiserie.fr/sitemap-index.xml
+Sitemap: https://menuiseriecortopassi.netlify.app/sitemap-0.xml
