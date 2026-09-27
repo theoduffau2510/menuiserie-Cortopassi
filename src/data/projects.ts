@@ -122,4 +122,17 @@ export const projects: Project[] = [
     imageHeight: 1753,
     alt: 'Fenêtres en bois réalisées par la Menuiserie Cortopassi dans le Var',
   },
+  {
+    slug: 'realisation-bois-atelier',
+    title: 'Réalisation en bois',
+    category: 'mobilier-sur-mesure',
+    city: 'Var',
+    dimensions: 'Sur mesure',
+    material: 'Bois',
+    description: 'Réalisation artisanale en bois par la Menuiserie Cortopassi.',
+    image: '/images/WhatsApp%20Image%202026-09-26%20at%2010.22.15%20(4).jpeg',
+    imageWidth: 4032,
+    imageHeight: 3024,
+    alt: 'Réalisation en bois de la Menuiserie Cortopassi dans le Var',
+  },
 ];
